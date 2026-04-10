@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  customerId      String // Linked to Auth Service
+  restaurantId    String // Linked to Restaurant Service
+  status          OrderStatus @default(PENDING)
+  totalAmount     Float
+  deliveryAddress String
+  items           Json // Snapshot of order items
+  idempotencyKey  String?     @unique // To prevent double processing
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  outboxEvents OutboxEvent[]
+}
+
+model OutboxEvent {
+  id          String   @id @default(uuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id])
+  type        String // e.g., "order.created"
+  payload     Json
+  isProcessed Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
