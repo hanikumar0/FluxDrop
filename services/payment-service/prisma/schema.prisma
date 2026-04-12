@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum TransactionType {
+  DEBIT
+  CREDIT
+}
+
+model Transaction {
+  id               String          @id @default(uuid())
+  orderId          String          @unique
+  customerId       String
+  amount           Float
+  currency         String          @default("INR")
+  status           PaymentStatus   @default(PENDING)
+  provider         String          // e.g., "RAZORPAY"
+  providerRef      String?         // Reference ID from gateway
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  ledgerEntries    LedgerEntry[]
+}
+
+model LedgerEntry {
+  id             String          @id @default(uuid())
+  transactionId  String
+  transaction    Transaction     @relation(fields: [transactionId], references: [id])
+  type           TransactionType
+  amount         Float
+  description    String
+  createdAt      DateTime        @default(now())
+}
