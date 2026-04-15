@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum DeliveryStatus {
+  SEARCHING_RIDER
+  ASSIGNED
+  ARRIVED_AT_RESTAURANT
+  PICKED_UP
+  ARRIVED_AT_CUSTOMER
+  DELIVERED
+  FAILED
+}
+
+model Delivery {
+  id              String         @id @default(uuid())
+  orderId         String         @unique
+  riderId         String?        // Linked to Auth Service User (Rider Role)
+  status          DeliveryStatus @default(SEARCHING_RIDER)
+  restaurantLat   Float
+  restaurantLng   Float
+  customerLat     Float
+  customerLng     Float
+  assignedAt      DateTime?
+  pickedUpAt      DateTime?
+  deliveredAt     DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([riderId])
+}
