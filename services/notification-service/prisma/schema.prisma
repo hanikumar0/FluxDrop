@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum NotificationType {
+  PUSH
+  SMS
+  EMAIL
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  READ
+}
+
+model Notification {
+  id        String             @id @default(uuid())
+  userId    String             // Recipient ID
+  type      NotificationType
+  title     String
+  body      String
+  status    NotificationStatus @default(PENDING)
+  provider  String?            // e.g., "FCM", "TWILIO", "SENDGRID"
+  metadata  Json?              // Additional payload
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@index([userId])
+}
+
+model UserPreference {
+  id               String  @id @default(uuid())
+  userId           String  @unique
+  emailEnabled     Boolean @default(true)
+  smsEnabled       Boolean @default(true)
+  pushEnabled      Boolean @default(true)
+  marketingEnabled Boolean @default(true)
+}
