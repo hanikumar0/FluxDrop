@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fluxdrop-ingress
+  namespace: fluxdrop
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+  - hosts:
+    - api.fluxdrop.com
+    secretName: fluxdrop-tls
+  rules:
+  - host: api.fluxdrop.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway
+            port:
+              number: 80
+      - path: /tracking
+        pathType: Prefix
+        backend:
+          service:
+            name: delivery-service
+            port:
+              number: 80
