@@ -1,0 +1,23 @@
+{
+  "name": "analytics-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.21",
+    "@types/node": "^25.6.2",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@clickhouse/client": "^1.18.4",
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/core": "^11.1.19",
+    "kafkajs": "^2.2.4"
+  }
+}
