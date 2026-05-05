@@ -1,0 +1,22 @@
+{
+  "name": "reliability",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/core": "^11.1.19",
+    "ioredis": "^5.10.1",
+    "opossum": "^9.0.0",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@types/opossum": "^8.1.9"
+  }
+}
