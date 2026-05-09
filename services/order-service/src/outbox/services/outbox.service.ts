@@ -10,15 +10,12 @@ export class OutboxService {
 
   constructor(private prisma: PrismaService) {
     this.client = ClientProxyFactory.create({
-      transport: Transport.KAFKA,
+      transport: Transport.REDIS,
       options: {
-        client: {
-          clientId: 'order-service',
-          brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
-        },
-        consumer: {
-          groupId: 'order-consumer',
-        },
+        host: 'balanced-honeybee-120021.upstash.io',
+        port: 6379,
+        password: 'gQAAAAAAAdTVAAIgcDI1ZDU0NWRlNThkZGM0ZWQyOTUzYWYxYTI3MWNhN2Q0Zg',
+        tls: {},
       },
     });
   }

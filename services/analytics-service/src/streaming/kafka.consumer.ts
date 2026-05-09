@@ -1,40 +1,36 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { Kafka, Consumer, EachMessageHandler } from 'kafkajs';
+import Redis from 'ioredis';
 import { ClickHouseService } from '../clickhouse/clickhouse.service';
 
 @Injectable()
-export class KafkaAnalyticsConsumer implements OnModuleInit {
-  private kafka = new Kafka({
-    clientId: 'analytics-service',
-    brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
-  });
+export class RedisAnalyticsConsumer implements OnModuleInit {
+  private redis: Redis;
 
-  private consumer: Consumer = this.kafka.consumer({ groupId: 'analytics-group' });
-
-  constructor(private clickHouseService: ClickHouseService) {}
+  constructor(private clickHouseService: ClickHouseService) {
+    this.redis = new Redis("rediss://default:gQAAAAAAAdTVAAIgcDI1ZDU0NWRlNThkZGM0ZWQyOTUzYWYxYTI3MWNhN2Q0Zg@balanced-honeybee-120021.upstash.io:6379");
+  }
 
   async onModuleInit() {
-    await this.consumer.connect();
-    await this.consumer.subscribe({ topics: ['orders.v1', 'payments.v1'], fromBeginning: false });
+    // Subscribe to multiple event channels
+    await this.redis.subscribe('order.created', 'payment.confirmed');
 
-    await this.consumer.run({
-      eachMessage: (async ({ topic, partition, message }) => {
-        if (!message.value) return;
+    this.redis.on('message', async (channel, message) => {
+      try {
+        const payload = JSON.parse(message);
         
-        const payload = JSON.parse(message.value.toString());
-        
-        console.log(`Received event from ${topic}:`, payload.orderId);
+        console.log(`Received event from channel ${channel}:`, payload.orderId);
 
         const enrichedEvent = {
           ...payload,
           processed_at: new Date().toISOString(),
-          topic,
-          partition,
-          offset: message.offset,
+          channel,
+          source: 'upstash-redis',
         };
 
         await this.clickHouseService.insertOrderEvent(enrichedEvent);
-      }) as EachMessageHandler,
+      } catch (error) {
+        console.error('Failed to process analytics event:', error);
+      }
     });
   }
 }
