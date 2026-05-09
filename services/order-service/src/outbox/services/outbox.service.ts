@@ -6,14 +6,19 @@ import { PrismaService } from '../../prisma/prisma.service';
 @Injectable()
 export class OutboxService {
   private readonly logger = new Logger(OutboxService.name);
-  private client: ClientProxy;
+  private client: any;
 
   constructor(private prisma: PrismaService) {
     this.client = ClientProxyFactory.create({
-      transport: Transport.RMQ,
+      transport: Transport.KAFKA,
       options: {
-        urls: [process.env.RABBITMQ_URI || 'amqp://admin:rootpassword@localhost:5672'],
-        queue: 'order_service_queue',
+        client: {
+          clientId: 'order-service',
+          brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
+        },
+        consumer: {
+          groupId: 'order-consumer',
+        },
       },
     });
   }
