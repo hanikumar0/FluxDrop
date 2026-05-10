@@ -79,7 +79,7 @@ sequenceDiagram
 | **Frontend** | Next.js 14, Tailwind CSS, Lucide |
 | **Databases** | PostgreSQL, MongoDB, ClickHouse |
 | **Messaging** | Kafka, RabbitMQ, Redis Pub/Sub |
-| **Infrastructure** | Docker, Kubernetes (K8s), Helm, Terraform |
+| **Infrastructure** | Cloud-Native, Helm, Terraform |
 | **CI/CD** | GitHub Actions, Expo EAS |
 | **Observability** | Prometheus, Grafana, Loki, OpenTelemetry |
 
@@ -88,12 +88,11 @@ sequenceDiagram
 ## 📂 Repository Structure
 
 ```text
-fluxdrop-monorepo/
+fluxdrop/
 ├── server/                 # Backend Core & Infrastructure
 │   ├── gateway/            # API Gateway (Routing, Auth, Rate Limiting)
 │   ├── services/           # Microservices (Auth, Order, Delivery, etc.)
 │   ├── shared/             # Shared Backend Libraries (Config, Utils, Types)
-│   ├── docker/             # Docker Compose & K8s Manifests
 │   ├── docs/               # System Documentation
 │   └── scripts/            # Infrastructure Scripts
 ├── customer-app/           # Customer-facing Next.js Application
@@ -109,14 +108,12 @@ fluxdrop-monorepo/
 ### Prerequisites
 - Node.js v20+
 - Python 3.11+
-- Docker & Docker Compose
-- Kubernetes (local via Minikube/Docker Desktop)
 
 ### Installation
 1. **Clone the repo:**
    ```bash
    git clone https://github.com/your-org/fluxdrop.git
-   cd fluxdrop-monorepo
+   cd fluxdrop
    ```
 
 2. **Install Dependencies:**
@@ -124,18 +121,13 @@ fluxdrop-monorepo/
    npm install
    ```
 
-3. **Spin up Infrastructure:**
-   ```bash
-   docker-compose -f server/docker/docker-compose.yml up -d
-   ```
-
-4. **Initialize Databases:**
+3. **Initialize Databases:**
    ```bash
    # Run migrations for individual services
    npm run db:push -w auth-service
    ```
 
-5. **Run Development Services:**
+4. **Run Development Services:**
    ```bash
    npm run dev
    ```
