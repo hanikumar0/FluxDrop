@@ -89,25 +89,17 @@ sequenceDiagram
 
 ```text
 fluxdrop-monorepo/
-├── services/               # Microservices (NestJS & Python)
-│   ├── auth-service/       # Identity & RBAC
-│   ├── order-service/      # Distributed Saga Workflows
-│   ├── delivery-service/   # Real-time Logistics & Tracking
-│   ├── payment-service/    # Financial Settlements & Ledgers
-│   ├── restaurant-service/ # Catalog & Kitchen Management
-│   ├── analytics-service/  # Kafka-to-ClickHouse Ingestion
-│   └── ml-platform/        # ETA & Optimization Engines (Python)
-├── mobile/                 # Mobile Applications
-│   ├── customer-app/       # Consumer Experience
-│   └── rider-app/          # Logistics Execution
-├── admin/                  # Operations & BI Platforms
-│   ├── dashboard/          # Control Center (Live Ops)
-│   └── analytics/          # Business Intelligence (Next.js)
-├── libs/                   # Shared Infrastructure Libraries
-│   ├── reliability/        # Circuit Breakers & Rate Limiting
-│   └── saas/               # Multi-tenancy & Isolation
-├── k8s/                    # Kubernetes Manifests & Helm Charts
-└── .github/                # CI/CD Workflows
+├── server/                 # Backend Core & Infrastructure
+│   ├── gateway/            # API Gateway (Routing, Auth, Rate Limiting)
+│   ├── services/           # Microservices (Auth, Order, Delivery, etc.)
+│   ├── shared/             # Shared Backend Libraries (Config, Utils, Types)
+│   ├── docker/             # Docker Compose & K8s Manifests
+│   ├── docs/               # System Documentation
+│   └── scripts/            # Infrastructure Scripts
+├── customer-app/           # Customer-facing Next.js Application
+├── delivery-app/           # Delivery Partner Next.js/Mobile App
+└── admin-app/              # Admin Operations Dashboard
+
 ```
 
 ---
@@ -134,13 +126,13 @@ fluxdrop-monorepo/
 
 3. **Spin up Infrastructure:**
    ```bash
-   docker-compose up -d
+   docker-compose -f server/docker/docker-compose.yml up -d
    ```
 
 4. **Initialize Databases:**
    ```bash
-   npx turbo prisma:generate
-   npx turbo prisma:deploy
+   # Run migrations for individual services
+   npm run db:push -w auth-service
    ```
 
 5. **Run Development Services:**
