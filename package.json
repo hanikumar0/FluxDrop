@@ -1,5 +1,5 @@
 {
-  "name": "fluxdrop-monorepo",
+  "name": "fluxdrop",
   "private": true,
   "scripts": {
     "build": "npm run build --workspaces --if-present",
@@ -25,6 +25,10 @@
   "workspaces": [
     "server/services/*",
     "server/shared/*",
+    "server/gateway",
+    "server/websocket",
+    "server/workers",
+    "server/jobs",
     "customer-app",
     "delivery-app",
     "admin-app"
