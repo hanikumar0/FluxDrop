@@ -2,16 +2,20 @@
   "name": "fluxdrop-monorepo",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
+    "build": "npm run build --workspaces --if-present",
+    "dev": "npm run dev --workspaces --if-present",
+    "dev:backend": "concurrently -n \"AUTH,ORDER,PAY,RESTAURANT,DELIVERY,NOTIFY,GATEWAY\" -c \"blue,green,magenta,yellow,cyan,white,red\" \"npm run dev -w auth-service\" \"npm run dev -w order-service\" \"npm run dev -w payment-service\" \"npm run dev -w restaurant-service\" \"npm run dev -w delivery-service\" \"npm run dev -w notification-service\" \"npm run dev -w api-gateway\"",
+    "dev:admin": "npm run dev --workspace=@fluxdrop/admin-app",
+    "dev:customer": "npm run dev --workspace=@fluxdrop/customer-app",
+    "dev:delivery": "npm run dev --workspace=@fluxdrop/delivery-app",
+    "lint": "npm run lint --workspaces --if-present",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "check-types": "npm run check-types --workspaces --if-present"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "prettier": "^3.7.4",
-    "prisma": "^7.8.0",
-    "turbo": "^2.9.12",
+
     "typescript": "5.9.2"
   },
   "engines": {
@@ -19,9 +23,11 @@
   },
   "packageManager": "npm@10.8.2",
   "workspaces": [
-    "apps/*",
-    "packages/*",
-    "services/*"
+    "server/services/*",
+    "server/shared/*",
+    "customer-app",
+    "delivery-app",
+    "admin-app"
   ],
   "dependencies": {
     "@nestjs/microservices": "^11.1.19",

@@ -9,7 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [auth-service, order-service, restaurant-service, payment-service, delivery-service, notification-service]
+        service: [
+          auth-service, 
+          order-service, 
+          restaurant-service, 
+          payment-service, 
+          delivery-service, 
+          notification-service,
+          admin-service,
+          user-service,
+          analytics-service,
+          api-gateway
+        ]
 
     steps:
     - uses: actions/checkout@v4
@@ -30,7 +41,11 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $ECR_REGISTRY/fluxdrop-${{ matrix.service }}:$IMAGE_TAG -t $ECR_REGISTRY/fluxdrop-${{ matrix.service }}:latest -f services/${{ matrix.service }}/Dockerfile .
+        SERVICE_PATH="server/services/${{ matrix.service }}"
+        if [ "${{ matrix.service }}" == "api-gateway" ]; then
+          SERVICE_PATH="server/gateway"
+        fi
+        docker build -t $ECR_REGISTRY/fluxdrop-${{ matrix.service }}:$IMAGE_TAG -t $ECR_REGISTRY/fluxdrop-${{ matrix.service }}:latest -f $SERVICE_PATH/Dockerfile .
         docker push $ECR_REGISTRY/fluxdrop-${{ matrix.service }}:$IMAGE_TAG
         docker push $ECR_REGISTRY/fluxdrop-${{ matrix.service }}:latest
 
@@ -38,3 +53,4 @@ jobs:
       run: |
         aws eks update-kubeconfig --name fluxdrop-cluster
         kubectl set image deployment/${{ matrix.service }} ${{ matrix.service }}=$ECR_REGISTRY/fluxdrop-${{ matrix.service }}:$IMAGE_TAG -n fluxdrop
+

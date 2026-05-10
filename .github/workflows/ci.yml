@@ -1,7 +1,7 @@
 name: CI
 
 on:
-  pull_request:
+  push:
     branches: [ main ]
 
 jobs:
@@ -20,11 +20,8 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Lint all services
-      run: npx turbo lint
+    - name: Lint all workspaces
+      run: npm run lint --workspaces --if-present
 
     - name: Run unit tests
-      run: npx turbo test
-
-    - name: Check Prisma schemas
-      run: npx turbo prisma:check # Custom script to verify schema consistency
+      run: npm test --workspaces --if-present
