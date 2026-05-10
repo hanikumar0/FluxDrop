@@ -1,0 +1,33 @@
+{
+  "name": "@fluxdrop/server",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n \"GATEWAY,AUTH,USER,ORDER,PAY,DELIVERY,NOTIFY,REST,ANALYTICS,ADMIN,WS,WORKERS,JOBS\" -c \"cyan,blue,green,magenta,yellow,cyan,white,red,blue,green,magenta,yellow,cyan\" \"npm run dev:gateway\" \"npm run dev:auth\" \"npm run dev:user\" \"npm run dev:order\" \"npm run dev:payment\" \"npm run dev:delivery\" \"npm run dev:notification\" \"npm run dev:restaurant\" \"npm run dev:analytics\" \"npm run dev:admin\" \"npm run dev:websocket\" \"npm run dev:workers\" \"npm run dev:jobs\"",
+    "dev:gateway": "npm run dev -w @fluxdrop/api-gateway",
+    "dev:auth": "npm run dev -w auth-service",
+    "dev:user": "npm run dev -w user-service",
+    "dev:order": "npm run dev -w order-service",
+    "dev:payment": "npm run dev -w payment-service",
+    "dev:delivery": "npm run dev -w delivery-service",
+    "dev:notification": "npm run dev -w notification-service",
+    "dev:restaurant": "npm run dev -w restaurant-service",
+    "dev:analytics": "npm run dev -w analytics-service",
+    "dev:admin": "npm run dev -w admin-service",
+    "dev:websocket": "npm run dev -w @fluxdrop/websocket",
+    "dev:workers": "npm run dev -w @fluxdrop/workers",
+    "dev:jobs": "npm run dev -w @fluxdrop/jobs"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.9"
+  },
+  "workspaces": [
+    "services/*",
+    "shared/*",
+    "gateway",
+    "websocket",
+    "workers",
+    "jobs"
+  ]
+}

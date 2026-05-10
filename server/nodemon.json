@@ -1,0 +1,6 @@
+{
+  "watch": ["services", "gateway", "shared", "websocket", "workers", "jobs"],
+  "ext": "ts,js,json",
+  "ignore": ["**/node_modules/**", "**/dist/**", "**/*.spec.ts"],
+  "exec": "npm run dev"
+}
